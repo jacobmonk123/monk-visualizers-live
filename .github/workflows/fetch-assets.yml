@@ -1,0 +1,28 @@
+name: Fetch and commit assets
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create assets directory
+        run: mkdir -p assets
+      - name: Download CSS
+        run: curl -L -o assets/index-CT1tCjOf.css "https://litter.catbox.moe/vxftvr.css"
+      - name: Download JS
+        run: curl -L -o assets/index-DRIc0nQV.js "https://litter.catbox.moe/2gjh9n.js"
+      - name: Verify files
+        run: ls -la assets/ && wc -c assets/*
+      - name: Remove test file
+        run: rm -f test-delete-me.txt
+      - name: Remove this workflow
+        run: rm -f .github/workflows/fetch-assets.yml
+      - name: Commit assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Add built assets and clean up"
+          git push
